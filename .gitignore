@@ -1,5 +1,4 @@
 node_modules
 .DS_Store
-quiz.sqlite
 public/media
 npm-debug.log
