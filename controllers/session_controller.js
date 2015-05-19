@@ -34,3 +34,16 @@ exports.destroy = function(req, res) {
 delete req.session.user;
 res.redirect(req.session.redir.toString()); // redirect a path anterior a login
 };
+
+exports.auto_logout = function(req,res,next){
+var tiempo2 = new Date();
+tiempo2= tiempo2.getSeconds() + tiempo2.getMinutes()*60 + tiempo2.getHours()*3600;
+if(req.session.user){
+if((tiempo2-req.session.time)>120){
+req.session.time = undefined;
+res.redirect('/logout');
+}
+}
+next();
+};
+

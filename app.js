@@ -47,6 +47,14 @@ next();
 });
 
 
+app.use(function(req, res, next) {
+var tiempo= new Date();
+tiempo= tiempo.getSeconds() + tiempo.getMinutes()*60 + tiempo.getHours()*3600;
+req.session.time = req.session.time || tiempo;
+next();
+});
+
+
 app.use('/', routes);
 
 
