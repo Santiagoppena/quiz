@@ -1,0 +1,31 @@
+
+var models = require('../models/models.js');
+
+
+
+//GET /quizes/statistics
+exports.statistics = function(req, res){
+models.Quiz.findAll().then(function(quizes){
+var numeroPreguntas = quizes.length;
+models.Comment.findAll().then(function(comments){
+var numeroComentarios = comments.length;
+var mediaComentarios = numeroComentarios/numeroPreguntas;
+var sinComentarios = 0;
+var conComentarios = 0;
+var i = 0;
+var array=[];
+for(i=0; i<numeroComentarios; i++){
+ array[comments[i].QuizId] ? array[comments[i].QuizId]++ : array[comments[i].QuizId] = 1;
+}
+for(i=1; i<=numeroPreguntas; i++){
+if(!array[i]){
+sinComentarios++;
+} else{
+conComentarios++;
+}
+}
+res.render('quizes/statistics', {quizes: quizes, preguntas: numeroPreguntas, comentarios: numeroComentarios, mediaComentarios: mediaComentarios, sinComentarios: sinComentarios, conComentarios: conComentarios, errors: []});
+}).catch(function(error){next(error);})
+}).catch(function(error){next(error);})
+}; 
+

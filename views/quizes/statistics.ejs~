@@ -1,0 +1,13 @@
+
+<h1> Estadísticas Quiz 2p:</h1>
+<p> El número de preguntas es: <%= preguntas %></p>
+<p> El número de comentarios es: <%= comentarios %></p>
+<p> El número medio de comentarios es: <%= mediaComentarios %></p>
+<p> El número de preguntas sin comentarios es: <%= sinComentarios %></p>
+<p> El número de preguntas con comentarios es: <%= conComentarios %></p>
+<footer class="main" id="f1">
+	<a href="http://es.wikipedia.org/wiki/Quiz">
+		¿Que es un Quiz?</a>
+        <a href="https://github.com/Santiagoppena/quiz">
+		Enlace a GitHub</a>
+</footer>
