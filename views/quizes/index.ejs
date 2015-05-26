@@ -16,8 +16,23 @@ if(session.user.isAdmin || session.user.id === quizes[i].UserId) {%>
 </button>
 </form>
 </td>
-<% }
-}%>
+<%}%>
+
+ <td>
+<%if(marca[i] === "desmarcado"){%>
+<form method="post" action="/user/<%= session.user.id %>/favourites/<%= quizes[i].id %>?_method=put">
+<input class="desmarcado" type="submit" value="">
+ </form>
+ <%};%>
+ <%if(marca[i] === "marcado"){%>
+ <form method="post" action="/user/<%= session.user.id %>/favourites/<%= quizes[i].id %>?_method=delete">
+ <button class="marcado" type="submit" onClick="return confirm('Eliminar: <%= quizes[i].pregunta %> de Favoritos');"></button>
+ </form>
+ <%}%>
+ </td>
+
+<%}%>
+
 </tr>
 <% } %>
 </table><p>

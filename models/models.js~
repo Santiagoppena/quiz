@@ -29,7 +29,7 @@ var Quiz = sequelize.import(quiz_path);
 // Importar definicion de la tabla Comment
 var comment_path = path.join(__dirname, 'comment');
 var Comment = sequelize.import(comment_path);
-
+var Favourites = sequelize.import(path.join(__dirname,'favourites'));
 
 // Importar definicion de la tabla User
 var user_path = path.join(__dirname, 'user');
@@ -42,10 +42,14 @@ Quiz.hasMany(Comment); // Un quiz puede tener muchos comentarios
 Quiz.belongsTo(User);
 User.hasMany(Quiz);
 
+User.belongsToMany(Quiz, {through: 'Favourites'});
+Quiz.belongsToMany(User, {through: 'Favourites'});
+
 //exportar tablas
 exports.Quiz = Quiz; // exportar definición de tabla Quiz
 exports.Comment = Comment; // exportar definición de tabla Comment
 exports.User = User;
+exports.Favourites = Favourites;
 
 //sequelize.sync() inicializa tabla de preguntas DB.
 sequelize.sync().then(function() {
@@ -64,10 +68,17 @@ Quiz.bulkCreate(
 [ {pregunta: 'Capital de Italia', respuesta: 'Roma', UserId: 2}, // estos quizes pertenecen al usuario pepe (2)
 {pregunta: 'Capital de Portugal', respuesta: 'Lisboa', UserId: 2}
 ]
-).then(function(){console.log('Base de datos (tabla quiz) inicializada')});
-};
-});
-});
-};
-});
+).then(function(){
+ Favourites.count().then(function(count) {
+ if(count === 0) { //si la tabla está vacía se inicializa
+ Favourites.bulkCreate([ {UserId: 1, QuizId: 3}])
+ .then(function(){console.log('Tablas inicializadas')});
+ }
+ });
+ });
+ }
+ });
+ });
+ }
+ });
 });

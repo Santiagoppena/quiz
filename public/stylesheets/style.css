@@ -14,3 +14,21 @@ display:inline-block;}
 #ErrorMsgs { color: #f61; font-size: smaler}
 .right {float: right;}
 .quiz_img {height: :150px; float: left;}
+
+.marcado {
+ background-repeat: no-repeat;
+ width: 48px;
+ height: 48px;
+ display: block;
+ background-position: center center;
+ background-image: url("../amarilla2.png");
+}
+
+.desmarcado {
+ background-repeat: no-repeat;
+ width: 48px;
+ height: 48px;
+ display: block;
+ background-position: center center;
+ background-image: url("../blanca2.png");
+}

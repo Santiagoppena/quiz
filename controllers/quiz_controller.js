@@ -20,10 +20,20 @@ next();
 
 
 // Get /quizes/:id
-exports.show = function(req,res){
-	res.render('quizes/show', {quiz: req.quiz, errors: []});
-
+exports.show = function(req, res) {
+ var marca = "desmarcado";
+ if (req.session.user) {
+ models.Favourites.find({ where: { UserId: Number(req.session.user.id), QuizId: Number(req.quiz.id) }})
+ .then(function(favorito) {
+ if (favorito) {marca = "marcado";};
+res.render('quizes/show', { quiz: req.quiz, marca: marca, errors: []});
+ });
+} else {
+ res.render('quizes/show', { quiz: req.quiz, marca: marca, errors: []});
+ }
 };
+
+
 // Get /quizes/:id
 exports.edit = function(req,res){
 var quiz = req.quiz;//Autoload de instancia de quiz
@@ -46,25 +56,58 @@ res.render('quizes/answer', {quiz:req.quiz, respuesta:resultado ,errors: []});
 
 
 // Get /quizes
-exports.index = function(req,res){
-	
-var search=req.query.search;  
-if(search === undefined){
-	var options = {};
-	if(req.user){
-		options.where = {UserId: req.user.id};
-	}
-models.Quiz.findAll(options).then(
-function(quizes){
-res.render('quizes/index.ejs', {quizes: quizes,errors:[]});
+ exports.index = function(req, res) {
+var cadena = "";
+var options = {};
+var marca = [];
+var favoritos = [];
+
+if(req.user){
+options.where = {UserId: req.user.id}
+
+ };
+
+ if (req.session.user) {
+models.Favourites.findAll({ where: { UserId: Number(req.session.user.id) }})
+ .then(function(f) { favoritos = f;
+if (req.query.search === undefined) {
+ models.Quiz.findAll(options).then(function(quizes) {
+ for (j in quizes) {
+ marca[j] = "desmarcado";
+ for (k in favoritos) {
+ if (favoritos[k].QuizId === quizes[j].id) {marca[j] = "marcado";}
+ }
 }
-).catch(function(error){next(error);})}
-else{
-search="%"+search+"%";
-search = search.replace(/ /g,'%');
-models.Quiz.findAll({where: ["pregunta like ?", search]}).then(function(quizes){
-res.render('quizes/index.ejs', {quizes: quizes, errors:[]});
-}).catch(function(error){next(error);})
+ res.render('quizes/index', { quizes: quizes, marca: marca, errors: []});
+ }).catch(function(error) { next(error);});
+ } else {
+ cadena = '%'+req.query.search+'%';
+ cadena = cadena.replace(/ /g, '%');
+ models.Quiz.findAll({where: ["pregunta like ?", cadena], order: ['pregunta']})
+.then(function(quizes) {
+ for (j in quizes) {
+ marca[j] = "desmarcado";
+ for (k in favoritos) {
+if (favoritos[k].QuizId === quizes[j].id) {marca[j] = "marcado";}
+}
+ }
+ res.render('quizes/index', { quizes: quizes, marca: marca, errors: []});
+ }).catch(function(error) { next(error);});
+ }
+ });
+} else {
+ if (req.query.search === undefined) {
+ models.Quiz.findAll(options).then(function(quizes) {
+ res.render('quizes/index', { quizes: quizes, marca: marca, errors: []});
+ }).catch(function(error) { next(error);});
+ } else {
+cadena = '%'+req.query.search+'%';
+ cadena = cadena.replace(/ /g, '%');
+ models.Quiz.findAll({where: ["pregunta like ?", cadena], order: ['pregunta']})
+ .then(function(quizes) {
+res.render('quizes/index', { quizes: quizes, marca: marca, errors: []});
+ }).catch(function(error) { next(error);});
+ }
 }
 };
 

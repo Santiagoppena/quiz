@@ -1,3 +1,16 @@
+
+ <%if(session.user){%>
+ <%if(marca === "desmarcado"){%>
+ <form method="post" action="/user/<%= session.user.id %>/favourites/<%= quiz.id %>?_method=put">
+ <input class="desmarcado" type="submit" value="">
+ </form>
+ <%};%>
+ <%if(marca === "marcado"){%>
+ <form method="post" action="/user/<%= session.user.id %>/favourites/<%= quiz.id %>?_method=delete">
++ <button class="marcado" type="submit" onClick="return confirm('Eliminar: <%= quiz.pregunta %> de Favoritos');"></button>
+ </form>
+ <%}%>
+ <%}%>
 <% if(quiz.image){ %>
 <p><img class="quiz_img" src="/media/<%= quiz.image %>"></p>
 <% } %>
